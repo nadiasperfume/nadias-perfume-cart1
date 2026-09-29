@@ -272,3 +272,8 @@ body:not(.admin-body) ::selection{background:var(--gold);color:#19221c}
 [data-cms-block],.cms-page-intro,main .panel p{white-space:pre-line}
 button:disabled{cursor:not-allowed;opacity:.55}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #bf985e;outline-offset:3px}
 img[hidden]{display:none!important}
+
+/* Larger homepage header logo */
+body header .brand-logo{width:150px;height:96px;max-width:none}
+@media(max-width:900px){body header .brand-logo{width:138px;height:88px}}
+@media(max-width:560px){body header .brand-logo{width:125px;height:80px}}
