@@ -336,8 +336,9 @@ function renderEvents(){
   body.innerHTML=events.map(r=>`<tr><td><b>${esc(r.request_number)}</b></td><td>${esc(r.customer_name)}<br><small>${esc(r.phone)}${r.email?'<br>'+esc(r.email):''}</small></td><td>${esc(eventTypeLabel(r.event_type))}${r.venue?'<br><small>'+esc(r.venue)+'</small>':''}</td><td>${esc(r.event_date)}<br><small>${esc(r.city)}</small></td><td>${r.guest_count??'—'}</td><td><select onchange="setEventStatus('${r.id}',this.value)">${['new','contacted','planning','quoted','confirmed','completed','cancelled'].map(s=>`<option value="${s}" ${r.status===s?'selected':''}>${eventStatusLabel(s)}</option>`).join('')}</select></td><td style="min-width:240px">${esc(r.requirements)}${r.notes?'<br><small>'+esc(r.notes)+'</small>':''}</td></tr>`).join('')||`<tr><td colspan="7">${txt('لا توجد طلبات مناسبات بعد.','No event requests yet.')}</td></tr>`;
 }
 async function setEventStatus(id,status){
-  const {error}=await sb.from('event_requests').update({status,updated_at:new Date().toISOString()}).eq('id',id);
-  if(error){alert(NadiaStore.error(error,lang==='ar'));await loadEvents();return;}await loadEvents();
+  const event=events.find(x=>x.id===id);if(!event)return;
+  const {error}=await sb.from('event_requests').update({status,updated_at:new Date().toISOString()}).eq('id',id).eq('updated_at',event.updated_at).select('id').single();
+  if(error){alert(txt('تغيّر طلب المناسبة أو تعذر الحفظ. تم تحديث القائمة.','Event request changed or could not save. The list has been refreshed.'));await loadEvents();return;}await loadEvents();
 }
 
 document.addEventListener('languagechange',()=>{
