@@ -1,4 +1,2 @@
-window.NADIA_SUPABASE = {
-  url: "https://tziucpfftohygfzlsahe.supabase.co",
-  anonKey: "sb_publishable_SUUPWWsrlQsTMofOKhEm6w_uiqr4gT-"
-};
+// Local placeholder only. Railway generates this file from SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY at runtime.
+window.NADIA_SUPABASE = { url: "", anonKey: "" };
