@@ -206,6 +206,9 @@ async function loadHomeContent(){
     setVal('#homeGiftsAr',v.gifts_ar);setVal('#homeGiftsEn',v.gifts_en);setVal('#homeGiftsImage',v.gifts_image);
     setVal('#homeEventAr',v.event_ar);setVal('#homeEventEn',v.event_en);setVal('#homeEventImage1',v.event_image_1);setVal('#homeEventImage2',v.event_image_2);
     setVal('#homeStoryAr',v.story_ar);setVal('#homeStoryEn',v.story_en);setVal('#homeStoryImage',v.story_image);
+    const visible={collection:true,gifts:true,events:true,story:true,world:true,...(v.section_visibility||{})};
+    const order={collection:1,gifts:2,events:3,story:4,world:5,...(v.section_order||{})};
+    [['Collection','collection'],['Gifts','gifts'],['Events','events'],['Story','story'],['World','world']].forEach(([id,key])=>{const check=A('#homeShow'+id);if(check)check.checked=visible[key]!==false;setVal('#homeOrder'+id,order[key]);});
   }catch(err){console.error(err)}
 }
 async function saveHomeContent(e){
@@ -216,7 +219,9 @@ async function saveHomeContent(e){
       gifts_ar:val('#homeGiftsAr'),gifts_en:val('#homeGiftsEn'),gifts_image:await maybeUpload('#homeGiftsFile','home/gifts',val('#homeGiftsImage')),
       event_ar:val('#homeEventAr'),event_en:val('#homeEventEn'),event_image_1:await maybeUpload('#homeEventFile1','home/events',val('#homeEventImage1')),
       event_image_2:await maybeUpload('#homeEventFile2','home/events',val('#homeEventImage2')),
-      story_ar:val('#homeStoryAr'),story_en:val('#homeStoryEn'),story_image:await maybeUpload('#homeStoryFile','home/story',val('#homeStoryImage'))
+      story_ar:val('#homeStoryAr'),story_en:val('#homeStoryEn'),story_image:await maybeUpload('#homeStoryFile','home/story',val('#homeStoryImage')),
+      section_visibility:{collection:A('#homeShowCollection')?.checked!==false,gifts:A('#homeShowGifts')?.checked!==false,events:A('#homeShowEvents')?.checked!==false,story:A('#homeShowStory')?.checked!==false,world:A('#homeShowWorld')?.checked!==false},
+      section_order:{collection:Number(val('#homeOrderCollection'))||1,gifts:Number(val('#homeOrderGifts'))||2,events:Number(val('#homeOrderEvents'))||3,story:Number(val('#homeOrderStory'))||4,world:Number(val('#homeOrderWorld'))||5}
     };
     await putContent('home',{...contentValues.home,...value});e.target.querySelectorAll('[type=file]').forEach(el=>el.value='');setStatus('#homeStatus',txt('تم تحديث الصفحة الرئيسية.','Home page updated.'),'success');await loadHomeContent();
   }catch(err){console.error(err);setStatus('#homeStatus',err.message||String(err),'error')}finally{unlockForm(e.target)}
