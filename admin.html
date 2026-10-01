@@ -68,6 +68,15 @@
 
     <section id="tab-home" class="admin-tab">
       <form id="homeForm" onsubmit="saveHomeContent(event)">
+        <div class="admin-card-v2"><h2 data-ar="ترتيب أقسام الصفحة الرئيسية" data-en="Home section controls">ترتيب أقسام الصفحة الرئيسية</h2><p class="hint" data-ar="أظهر أو أخفِ الأقسام وغيّر ترتيبها بدون تعديل الكود." data-en="Show, hide and reorder homepage sections without editing code.">أظهر أو أخفِ الأقسام وغيّر ترتيبها بدون تعديل الكود.</p>
+          <div class="admin-grid-2">
+            <div class="field"><label class="inline-check"><input id="homeShowCollection" type="checkbox"><span data-ar="إظهار مجموعة العطور" data-en="Show collection">إظهار مجموعة العطور</span></label><label for="homeOrderCollection" data-ar="الترتيب" data-en="Position">الترتيب</label><input id="homeOrderCollection" type="number" min="1" max="5"></div>
+            <div class="field"><label class="inline-check"><input id="homeShowGifts" type="checkbox"><span data-ar="إظهار الهدايا" data-en="Show gifts">إظهار الهدايا</span></label><label for="homeOrderGifts" data-ar="الترتيب" data-en="Position">الترتيب</label><input id="homeOrderGifts" type="number" min="1" max="5"></div>
+            <div class="field"><label class="inline-check"><input id="homeShowEvents" type="checkbox"><span data-ar="إظهار المناسبات" data-en="Show events">إظهار المناسبات</span></label><label for="homeOrderEvents" data-ar="الترتيب" data-en="Position">الترتيب</label><input id="homeOrderEvents" type="number" min="1" max="5"></div>
+            <div class="field"><label class="inline-check"><input id="homeShowStory" type="checkbox"><span data-ar="إظهار قصتنا" data-en="Show story">إظهار قصتنا</span></label><label for="homeOrderStory" data-ar="الترتيب" data-en="Position">الترتيب</label><input id="homeOrderStory" type="number" min="1" max="5"></div>
+            <div class="field"><label class="inline-check"><input id="homeShowWorld" type="checkbox"><span data-ar="إظهار عالم نادية" data-en="Show Nadia’s world">إظهار عالم نادية</span></label><label for="homeOrderWorld" data-ar="الترتيب" data-en="Position">الترتيب</label><input id="homeOrderWorld" type="number" min="1" max="5"></div>
+          </div>
+        </div>
         <div class="admin-card-v2"><h2 data-ar="واجهة الهوم" data-en="Home hero">واجهة الهوم</h2><div class="admin-grid-2">
           <div class="field"><label for="homeHeroAr" data-ar="العنوان بالعربية" data-en="Arabic title">العنوان بالعربية</label><input id="homeHeroAr"></div>
           <div class="field"><label for="homeHeroEn" data-ar="العنوان بالإنجليزية" data-en="English title">العنوان بالإنجليزية</label><input id="homeHeroEn"></div>
