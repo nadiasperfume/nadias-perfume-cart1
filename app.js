@@ -315,6 +315,8 @@ function openQuickView(slug){
   const p=allProducts.find(x=>x.slug===slug);if(!p)return;
   rememberViewed(slug);renderRecentlyViewed();
   const dialog=ensureQuickView(),body=document.getElementById('quickViewBody');
+  dialog.setAttribute('aria-label',pname(p));
+  dialog.querySelector('.quick-view__close').setAttribute('aria-label',t('إغلاق','Close'));
   const desc=lang==='ar'?(p.description_ar||''):(p.description_en||'');
   const size=p.size||p.size_ml||'',out=!NadiaStore.purchasable(p);
   body.innerHTML='<div class="quick-view__grid"><div class="quick-view__media">'+productImgTag(p)+'</div><div class="quick-view__copy"><div class="eyebrow">'+t('اكتشف العطر','DISCOVER THE SCENT')+'</div><h2>'+safe(pname(p))+'</h2><div class="price">'+money(p.price)+'</div>'+(size?'<span class="chip">'+safe(size)+(String(size).match(/^\d+$/)?t(' مل',' ml'):'')+'</span>':'')+'<p>'+(desc?safe(desc):t('تواصل معنا لمعرفة تفاصيل هذا العطر.','Contact us for details about this perfume.'))+'</p><div class="quick-view__actions"><button class="btn gold" '+(out?'disabled':'')+' onclick="addToCart(\''+safe(p.slug)+'\');document.getElementById(\'quickViewDialog\').close()">'+t('أضف للسلة','Add to bag')+'</button><a class="btn soft" href="product.html?slug='+encodeURIComponent(p.slug)+'">'+t('التفاصيل الكاملة','Full details')+'</a><button class="btn soft" onclick="toggleWish(\''+safe(p.slug)+'\')">♥ '+t('المفضلة','Wishlist')+'</button></div></div></div>';

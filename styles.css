@@ -300,3 +300,14 @@ body header .brand-logo{width:150px;height:96px;max-width:none}
  .gift-hero-layout{gap:14px}.gift-builder{padding:24px 18px}.gift-builder__head{align-items:center}.gift-builder__step{font-size:12px}
  .event-live-card{border-radius:18px;padding:20px}
 }
+
+/* Keep light-surface controls legible using the existing Nadia palette. */
+body:not(.admin-body) .quick-view .btn.soft{color:var(--ink);border-color:#9b896d}
+body:not(.admin-body) .quick-view .price,
+body:not(.admin-body) .quick-view .eyebrow{color:#73552e}
+.quick-view__copy{min-width:0;overflow-wrap:anywhere}
+/* The planner is already inside the booking grid; avoid a third narrow column. */
+.event-page .event-planner-shell{grid-template-columns:minmax(0,1fr);min-width:0}
+.event-page .event-live-card{position:static;order:-1}
+.event-page .event-form{min-width:0}
+.event-live-row b{min-width:0;overflow-wrap:anywhere}
