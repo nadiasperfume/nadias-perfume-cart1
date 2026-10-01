@@ -376,7 +376,7 @@ function initEventExperience(){
     const summary=document.getElementById('eventLiveSummary');if(summary){summary.innerHTML='';pairs.forEach(([label,value])=>{const row=document.createElement('div');row.className='event-live-row';const a=document.createElement('span'),b=document.createElement('b');a.textContent=label;b.textContent=value||'—';row.append(a,b);summary.append(row);});}
     const required=[...form.querySelectorAll('[required]')],done=required.filter(el=>el.type==='checkbox'?el.checked:String(el.value||'').trim()).length,pct=required.length?Math.round(done/required.length*100):0;
     const bar=aside.querySelector('.event-progress span');if(bar)bar.style.width=pct+'%';
-    const label=document.getElementById('eventProgressText');if(label)label.textContent=t('اكتمل '+pct+'% من الطلب,pct+'% complete');
+    const label=document.getElementById('eventProgressText');if(label)label.textContent=t('اكتمل '+pct+'% من الطلب',pct+'% complete');
   };
   form.addEventListener('input',update);form.addEventListener('change',update);update();
 }
