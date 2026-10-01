@@ -34,6 +34,7 @@ const PRIVATE_FILES = new Set([
   'README.txt',
   'README-MASTER.txt',
   'package.json',
+  'package-lock.json',
   'server.js',
 ]);
 const PRIVATE_DIRS = new Set(['tests', '.github']);
@@ -80,6 +81,11 @@ const server = http.createServer((req, res) => {
   }
 
   const relative = pathname === '/' ? 'index.html' : pathname.replace(/^\/+/, '');
+  const firstSegment = relative.split('/')[0];
+  if (PRIVATE_DIRS.has(firstSegment)) {
+    res.writeHead(404).end('Not found');
+    return;
+  }
   const filename = path.resolve(ROOT, relative);
   if (!filename.startsWith(`${ROOT}${path.sep}`) || PRIVATE_FILES.has(path.basename(filename))) {
     res.writeHead(404).end('Not found');
