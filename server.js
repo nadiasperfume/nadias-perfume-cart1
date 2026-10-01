@@ -107,10 +107,14 @@ const server = http.createServer((req, res) => {
       });
       return;
     }
+    const ext = path.extname(filename).toLowerCase();
+    const cacheControl = ext === '.html'
+      ? 'no-cache, max-age=0, must-revalidate'
+      : 'public, max-age=300';
     res.writeHead(200, {
       'Content-Type': type,
       'Content-Length': stat.size,
-      'Cache-Control': 'public, max-age=300',
+      'Cache-Control': cacheControl,
       'Last-Modified': stat.mtime.toUTCString(),
     });
     if (req.method === 'HEAD') {
