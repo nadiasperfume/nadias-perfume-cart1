@@ -24,6 +24,8 @@ const TYPES = {
 };
 const PRIVATE_FILES = new Set([
   'DATABASE_HARDENING.sql',
+  'EGYPT_ONLY.sql',
+  'OPTIONAL_INTERNATIONAL_SHIPPING.sql',
   'SUPABASE_CHECKOUT.sql',
   'SUPABASE_EVENT_CART.sql',
   'SUPABASE_PRODUCTS_20.sql',
@@ -34,12 +36,27 @@ const PRIVATE_FILES = new Set([
   'package.json',
   'server.js',
 ]);
+const PRIVATE_DIRS = new Set(['tests', '.github']);
 
 function applyHeaders(res) {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-  res.setHeader('Content-Security-Policy', "default-src 'self'; img-src 'self' data: https: *; style-src 'self' 'unsafe-inline' https: *; script-src 'self' 'unsafe-inline' https: *; font-src 'self' data: https: *; connect-src 'self' https: *; media-src 'self' https: *; object-src 'none'; frame-src 'self' https: *;");
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()');
+  res.setHeader('Content-Security-Policy', [
+    "default-src 'self'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'self'",
+    "object-src 'none'",
+    "img-src 'self' data: https:",
+    "style-src 'self' 'unsafe-inline'",
+    "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
+    "font-src 'self' data:",
+    "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
+    "media-src 'self' https:",
+    "frame-src 'self'"
+  ].join('; ') + ';');
 }
 
 const server = http.createServer((req, res) => {
