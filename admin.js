@@ -140,7 +140,7 @@ async function uploadImage(file,folder='general'){
 }
 async function toggleAvailability(id,makeAvailable){
   const p=products.find(x=>x.id===id);if(!p)return;
-  if(makeAvailable&&!(Number(p.stock)>0&&Number(p.price)>0)){editProduct(id);A('[name="stock"]')?.focus();return alert(txt('أدخل كمية المخزون أولاً.','Enter stock quantity first.'))}
+  if(makeAvailable&&!(Number(p.stock)>0&&Number(p.price)>0&&p.image_url&&p.description_ar&&p.description_en)){editProduct(id);A('[name="stock"]')?.focus();return alert(txt('أكمل السعر والمخزون والصورة والوصف العربي والإنجليزي قبل إظهار المنتج.','Complete price, stock, image, and Arabic and English descriptions before showing the product.'))}
   const {error}=await sb.from('products').update({active:makeAvailable,updated_at:new Date().toISOString()}).eq('id',id).eq('updated_at',p.updated_at).select('id').single();
   if(error)return alert(txt('تغيّر المنتج أو تعذر الحفظ. حدّث الصفحة.','Product changed or could not save. Refresh the page.'));await loadProducts();
 }
@@ -164,6 +164,8 @@ async function saveProduct(e){
       image_url:imageUrl,description_ar:String(f.get('description_ar')||'').trim()||null,description_en:String(f.get('description_en')||'').trim()||null,
       active:f.get('active')==='on',featured:f.get('featured')==='on',updated_at:new Date().toISOString()
     };
+    if(row.active&&!(Number(row.price)>0&&Number(row.stock)>0&&row.image_url&&row.description_ar&&row.description_en))throw new Error(txt('أكمل السعر والمخزون والصورة والوصف العربي والإنجليزي قبل إظهار المنتج.','Complete price, stock, image, and Arabic and English descriptions before showing the product.'));
+    if(row.compare_at_price!=null&&row.price!=null&&row.compare_at_price<=row.price)throw new Error(txt('السعر قبل الخصم يجب أن يكون أكبر من سعر البيع.','Compare-at price must be greater than the selling price.'));
     const r=id
       ?await sb.from('products').update(row).eq('id',id).eq('updated_at',editingVersion).select('id,slug').single()
       :await sb.from('products').insert(row).select('id,slug').single();
