@@ -1,0 +1,83 @@
+/* Nadia's Perfume Cart — editorial homepage, preserving the original palette */
+body{overflow-x:hidden}
+.editorial-hero{position:relative;min-height:min(780px,88vh);grid-template-columns:minmax(0,.78fr) minmax(420px,1.22fr);gap:0;padding:38px 0 72px}
+.editorial-hero:before{content:"N";position:absolute;inset-inline-start:-7vw;top:-9rem;font:400 clamp(28rem,55vw,52rem)/1 Georgia,serif;color:rgba(201,165,104,.035);pointer-events:none;z-index:-1}
+.editorial-hero>div{position:relative;z-index:2;padding:clamp(34px,6vw,90px) clamp(20px,4vw,62px) clamp(34px,6vw,80px) 0;align-self:end}
+html[dir=rtl] .editorial-hero>div{padding-inline:clamp(20px,4vw,62px) 0}
+.editorial-hero .eyebrow{display:flex;align-items:center;gap:14px;font-size:11px}
+.editorial-hero .eyebrow:before{content:"";width:44px;height:1px;background:var(--gold)}
+.editorial-hero h1{max-width:700px;font-size:clamp(46px,6vw,88px);line-height:1.05;margin:22px 0 34px;color:var(--cream);letter-spacing:-.035em}
+html[dir=rtl] .editorial-hero h1{letter-spacing:0;line-height:1.3}
+.editorial-hero .row{gap:12px}
+.editorial-hero .campaign-figure{position:relative;margin:0;align-self:stretch;min-height:650px;overflow:visible}
+.editorial-hero .campaign-figure:after{content:"01";position:absolute;inset-inline-end:-20px;bottom:-42px;font:400 72px/1 Georgia,serif;color:var(--gold);opacity:.7}
+.editorial-hero .campaign-image{width:100%;height:100%;min-height:650px;object-fit:cover;display:block;filter:saturate(.88) contrast(1.03)}
+.editorial-hero figcaption{position:absolute;inset-inline-start:-56px;bottom:60px;writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px;letter-spacing:.22em;color:var(--muted);text-transform:uppercase}
+.editorial-hero+.section{position:relative;padding-top:105px}
+.editorial-hero+.section:before{content:"NADIA’S · PERFUME · CART";position:absolute;top:28px;left:0;right:0;white-space:nowrap;overflow:hidden;text-align:center;font:400 clamp(30px,6vw,82px)/1 Georgia,serif;letter-spacing:.18em;color:rgba(201,165,104,.055)}
+.editorial-product-grid{grid-template-columns:repeat(12,1fr);gap:20px}
+.editorial-product-grid .card{grid-column:span 3;padding:0 0 18px;background:transparent;color:var(--cream);border:0;border-bottom:1px solid var(--line);overflow:hidden}
+.editorial-product-grid .card:nth-child(1),.editorial-product-grid .card:nth-child(6){grid-column:span 6}
+.editorial-product-grid .card:nth-child(1) .product-media,.editorial-product-grid .card:nth-child(6) .product-media{height:520px}
+.editorial-product-grid .product-media{height:340px;background:#0d281d}
+.editorial-product-grid .product-media img{transition:transform .65s cubic-bezier(.2,.7,.2,1),filter .65s;filter:saturate(.82)}
+.editorial-product-grid .card:hover{transform:none}
+.editorial-product-grid .card:hover .product-media img{transform:scale(1.035);filter:saturate(1)}
+.editorial-product-grid .wish{top:14px;inset-inline-end:14px;background:rgba(247,240,228,.9);z-index:3}
+.editorial-product-grid .card h3{font-size:clamp(24px,2.2vw,36px);color:var(--gold);margin:18px 0 8px}
+.editorial-product-grid .meta{color:var(--cream)}
+.editorial-product-grid .stock{color:var(--muted)}
+.editorial-product-grid .row{align-items:stretch}
+.editorial-product-grid .btn{font-size:12px}
+.editorial-feature{position:relative;display:grid;grid-template-columns:7fr 5fr;gap:0;align-items:center;margin-block:110px}
+.editorial-feature .campaign-figure{margin:0;min-height:620px;overflow:hidden}
+.editorial-feature .campaign-image{width:100%;height:620px;object-fit:cover;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.editorial-feature:hover .campaign-image{transform:scale(1.025)}
+.editorial-feature .campaign-copy{position:relative;margin-inline-start:-72px;background:var(--cream);color:var(--ink);padding:clamp(36px,6vw,82px);z-index:2;border-top:5px solid var(--gold)}
+.editorial-feature .campaign-copy h2{font:400 clamp(42px,5vw,72px)/1.08 Georgia,serif;color:var(--ink);margin:18px 0 32px}
+html[dir=rtl] .editorial-feature .campaign-copy h2{line-height:1.35}
+.editorial-feature .campaign-copy .eyebrow{color:#80643d}
+.editorial-feature-events{grid-template-columns:5fr 7fr}
+.editorial-feature-events .home-event-gallery{grid-column:2;display:grid;grid-template-columns:1.15fr .85fr;gap:10px;background:var(--forest2);padding:10px}
+.editorial-feature-events .home-event-main{height:620px}
+.editorial-feature-events .home-event-secondary{height:440px;align-self:end}
+.editorial-feature-events .campaign-copy{grid-column:1;grid-row:1;margin-inline-start:0;margin-inline-end:-72px}
+.editorial-feature-story .campaign-figure{clip-path:polygon(0 0,92% 0,100% 100%,8% 100%)}
+.campaign-gallery{padding-top:30px}
+.campaign-gallery-grid{display:grid;grid-template-columns:1.3fr .7fr .7fr 1.3fr;gap:12px;align-items:end}
+.campaign-gallery-grid figure{margin:0;overflow:hidden}
+.campaign-gallery-grid figure:nth-child(even){transform:translateY(38px)}
+.campaign-gallery-grid .campaign-image{aspect-ratio:3/4;object-fit:cover;transition:transform .6s}
+.campaign-gallery-grid figure:hover .campaign-image{transform:scale(1.03)}
+@media(max-width:900px){
+ .editorial-hero{grid-template-columns:1fr;min-height:auto;padding-top:12px}
+ .editorial-hero>div{padding:46px 0 34px;order:2}
+ .editorial-hero .campaign-figure{min-height:60vh;order:1}
+ .editorial-hero .campaign-image{min-height:60vh}
+ .editorial-hero figcaption{inset-inline-start:12px;bottom:12px;writing-mode:initial;transform:none;background:rgba(7,24,17,.72);padding:7px 10px}
+ .editorial-hero .campaign-figure:after{inset-inline-end:10px;bottom:-28px;font-size:54px}
+ .editorial-product-grid{grid-template-columns:repeat(2,1fr);gap:14px}
+ .editorial-product-grid .card,.editorial-product-grid .card:nth-child(1),.editorial-product-grid .card:nth-child(6){grid-column:auto}
+ .editorial-product-grid .product-media,.editorial-product-grid .card:nth-child(1) .product-media,.editorial-product-grid .card:nth-child(6) .product-media{height:300px}
+ .editorial-feature,.editorial-feature-events{grid-template-columns:1fr;margin-block:72px}
+ .editorial-feature .campaign-figure,.editorial-feature-events .home-event-gallery{grid-column:1;grid-row:1;min-height:480px}
+ .editorial-feature .campaign-image,.editorial-feature-events .home-event-main{height:480px}
+ .editorial-feature-events .home-event-secondary{height:320px}
+ .editorial-feature .campaign-copy,.editorial-feature-events .campaign-copy{grid-column:1;grid-row:2;margin:-55px 18px 0;padding:42px;z-index:2}
+ .campaign-gallery-grid{grid-template-columns:1fr 1fr}
+ .campaign-gallery-grid figure:nth-child(even){transform:none}
+}
+@media(max-width:560px){
+ .editorial-hero h1{font-size:44px}
+ .editorial-hero .campaign-figure,.editorial-hero .campaign-image{min-height:440px}
+ .editorial-product-grid{gap:9px}
+ .editorial-product-grid .product-media,.editorial-product-grid .card:nth-child(1) .product-media,.editorial-product-grid .card:nth-child(6) .product-media{height:220px}
+ .editorial-product-grid .card h3{font-size:22px}
+ .editorial-product-grid .card .row{display:grid}
+ .editorial-feature .campaign-figure,.editorial-feature-events .home-event-gallery{min-height:390px}
+ .editorial-feature .campaign-image,.editorial-feature-events .home-event-main{height:390px}
+ .editorial-feature-events .home-event-secondary{height:250px}
+ .editorial-feature .campaign-copy,.editorial-feature-events .campaign-copy{margin:-38px 10px 0;padding:30px 24px}
+ .editorial-feature .campaign-copy h2{font-size:38px}
+}
+@media(prefers-reduced-motion:reduce){.editorial-product-grid .product-media img,.editorial-feature .campaign-image,.campaign-gallery-grid .campaign-image{transition:none}}
