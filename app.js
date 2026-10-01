@@ -64,13 +64,13 @@ function closeMenu(){setPanelState($('#mobileMenu'),false,'[onclick="openMenu()"
 function closePanels(){setPanelState($('#cartDrawer'),false,'[onclick="openCart()"]');setPanelState($('#mobileMenu'),false,'[onclick="openMenu()"]');syncPanelUi()}
 document.addEventListener('keydown',event=>{if(event.key==='Escape')closePanels()});
 async function loadHomeContent(){
-  if(!sb||!document.querySelector('.hero'))return;
+  if(!sb||!document.querySelector('.hero,.concept-hero'))return;
   const {data}=await sb.from('site_content').select('value').eq('key','home').maybeSingle();
   const v=data?.value||{};
   const setText=(el,ar,en)=>{if(!el)return;if(ar!==undefined)el.dataset.ar=ar;if(en!==undefined)el.dataset.en=en;el.textContent=lang==='ar'?(el.dataset.ar||''):(el.dataset.en||'')};
   const setImg=applyCmsImage;
-  setText(document.querySelector('.hero h1'),v.hero_ar,v.hero_en);
-  setImg(document.querySelector('.hero .campaign-image'),v.hero_image);
+  setText(document.querySelector('.hero h1,.concept-hero h1'),v.hero_ar,v.hero_en);
+  setImg(document.querySelector('.hero .campaign-image,.concept-hero .campaign-image'),v.hero_image);
   setText(document.querySelector('#gifting h2'),v.gifts_ar,v.gifts_en);
   setImg(document.querySelector('#gifting .campaign-image'),v.gifts_image);
   setText(document.querySelector('#events h2'),v.event_ar,v.event_en);
@@ -78,6 +78,7 @@ async function loadHomeContent(){
   setImg(eventImgs[0],v.event_image_1);setImg(eventImgs[1],v.event_image_2);
   setText(document.querySelector('#our-story h2'),v.story_ar,v.story_en);
   setImg(document.querySelector('#our-story .campaign-image'),v.story_image);
+  applyHomeLayout(v);
 }
 async function loadAnnouncement(){if(!sb)return;const {data}=await sb.from('announcements').select('*').eq('active',true).order('updated_at',{ascending:false}).limit(1).maybeSingle();const el=$('#announcement');if(el&&data){el.dataset.ar=data.text_ar||'';el.dataset.en=data.text_en||'';el.textContent=lang==='ar'?data.text_ar:data.text_en;el.classList.remove('hidden')}}
 function renderProductPage(){const el=$('#productDetail');if(!el)return;if(!productsLoaded){el.textContent=t('جاري التحميل…','Loading…');return;}const slug=new URLSearchParams(location.search).get('slug');const p=allProducts.find(x=>x.slug===slug);if(!p){el.innerHTML=`<div class="panel">${t('العطر غير موجود','Perfume not found')}</div>`;return}updateProductMetadata(p);const previousQty=$('#detailQty')?.value||'1';const img=productImage(p),desc=lang==='ar'?(p.description_ar||''):(p.description_en||'');const size=p.size||p.size_ml||'';el.innerHTML=`<div class="product-media">${img?`${productImgTag(p)}<span class="product-image-name product-image-name--detail">${safe(pname(p))}</span>`:safe(pname(p).slice(0,1))}</div><div><div class="eyebrow">${t('عطور نادية','NADIA’S PERFUME CART')}</div><h2>${safe(pname(p))}</h2><div class="price">${money(p.price)}</div>${size?`<div class="chips"><span class="chip">${safe(size)}${String(size).match(/^\d+$/)?t(' مل',' ml'):''}</span></div>`:''}<p>${desc?safe(desc):t('تواصل معنا لمعرفة تفاصيل هذا العطر.','Contact us for details about this perfume.')}</p><div class="row"><input id="detailQty" aria-label="${t('الكمية','Quantity')}" class="qty" type="number" min="1" value="${safe(previousQty)}"><button class="btn gold" ${NadiaStore.purchasable(p)?'':'disabled'} onclick="addToCart('${safe(p.slug)}',document.getElementById('detailQty').value)">${t('أضف للسلة','Add to cart')}</button><button class="btn soft" onclick="toggleWish('${safe(p.slug)}')">♥ ${t('المفضلة','Wishlist')}</button></div></div>`}
@@ -221,14 +222,14 @@ async function loadCmsRuntime(){
   nadiaCmsCache={};(data||[]).forEach(r=>nadiaCmsCache[r.key]=r.value||{});
   applyGlobalSettings(nadiaCmsCache.settings||{});
   const page=cmsPageKey();if(page)applyPageCms(page,nadiaCmsCache['page_'+page]||{});
-  if(document.querySelector('.hero'))await loadHomeContent();
+  if(document.querySelector('.hero,.concept-hero'))await loadHomeContent();
 }
 document.addEventListener('DOMContentLoaded',()=>loadCmsRuntime().catch(()=>{}));
 document.addEventListener('languagechange',()=>{
   if(!nadiaCmsCache)return;
   applyGlobalSettings(nadiaCmsCache.settings||{});
   const page=cmsPageKey();if(page)applyPageCms(page,nadiaCmsCache['page_'+page]||{});
-  if(document.querySelector('.hero'))loadHomeContent();
+  if(document.querySelector('.hero,.concept-hero'))loadHomeContent();
 });
 
 
@@ -262,3 +263,149 @@ function updateProductMetadata(p){
  if(Number(p.price)>0)data.offers={'@type':'Offer',url:url.href,price:Number(p.price),priceCurrency:checkoutSettings().currency||'EGP',availability:checkoutSettings().checkout_enabled&&NadiaStore.purchasable(p)?'https://schema.org/InStock':'https://schema.org/OutOfStock'};
  schema.textContent=JSON.stringify(data);
 }
+
+
+// ---------- NADIA EXPERIENCE MODULES ----------
+function nadiaCurrentFile(){
+  return (location.pathname.split('/').pop()||'index.html').split('?')[0];
+}
+
+function syncMobileNavCounts(){
+  document.querySelectorAll('[data-mobile-wish-count]').forEach(el=>el.textContent=wishlist.length);
+  document.querySelectorAll('[data-mobile-cart-count]').forEach(el=>el.textContent=cart.reduce((sum,item)=>sum+item.qty,0));
+}
+function initMobileDock(){
+  if(document.body.classList.contains('admin-body')||document.querySelector('.mobile-dock'))return;
+  const file=nadiaCurrentFile(),view=new URLSearchParams(location.search).get('view');
+  const dock=document.createElement('nav');
+  dock.className='mobile-dock';
+  dock.setAttribute('aria-label',t('التنقل السريع','Quick navigation'));
+  const active=files=>files.includes(file)?' active':'';
+  dock.innerHTML=
+    '<a class="mobile-dock__item'+active(['index.html'])+'" href="index.html"><span>⌂</span><small>'+t('الرئيسية','Home')+'</small></a>'+
+    '<a class="mobile-dock__item'+active(['shop.html','product.html'])+'" href="shop.html"><span>◇</span><small>'+t('العطور','Perfumes')+'</small></a>'+
+    '<a class="mobile-dock__item'+(view==='wishlist'?' active':'')+'" href="shop.html?view=wishlist"><span>♡</span><small>'+t('المفضلة','Wishlist')+'</small><b data-mobile-wish-count>0</b></a>'+
+    '<button class="mobile-dock__item" type="button" onclick="openCart()"><span>▢</span><small>'+t('السلة','Bag')+'</small><b data-mobile-cart-count>0</b></button>';
+  document.body.append(dock);syncMobileNavCounts();
+}
+
+function ensureQuickView(){
+  let dialog=document.getElementById('quickViewDialog');
+  if(dialog)return dialog;
+  dialog=document.createElement('dialog');
+  dialog.id='quickViewDialog';dialog.className='quick-view';
+  dialog.innerHTML='<div class="quick-view__sheet"><button class="quick-view__close" type="button" aria-label="'+t('إغلاق','Close')+'">×</button><div id="quickViewBody"></div></div>';
+  dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close()});
+  dialog.querySelector('.quick-view__close').addEventListener('click',()=>dialog.close());
+  document.body.append(dialog);return dialog;
+}
+function enhanceProductCards(){
+  document.querySelectorAll('#productGrid .card').forEach(card=>{
+    if(card.querySelector('.quick-view-trigger'))return;
+    const link=card.querySelector('a[href*="product.html?slug="]');if(!link)return;
+    let slug='';try{slug=new URL(link.href,location.href).searchParams.get('slug')||''}catch(_){}
+    if(!slug)return;
+    const btn=document.createElement('button');btn.type='button';btn.className='quick-view-trigger';
+    btn.textContent=t('عرض سريع','Quick view');
+    btn.addEventListener('click',()=>openQuickView(slug));
+    card.append(btn);
+  });
+}
+function openQuickView(slug){
+  const p=allProducts.find(x=>x.slug===slug);if(!p)return;
+  rememberViewed(slug);renderRecentlyViewed();
+  const dialog=ensureQuickView(),body=document.getElementById('quickViewBody');
+  const desc=lang==='ar'?(p.description_ar||''):(p.description_en||'');
+  const size=p.size||p.size_ml||'',out=!NadiaStore.purchasable(p);
+  body.innerHTML='<div class="quick-view__grid"><div class="quick-view__media">'+productImgTag(p)+'</div><div class="quick-view__copy"><div class="eyebrow">'+t('اكتشف العطر','DISCOVER THE SCENT')+'</div><h2>'+safe(pname(p))+'</h2><div class="price">'+money(p.price)+'</div>'+(size?'<span class="chip">'+safe(size)+(String(size).match(/^\d+$/)?t(' مل',' ml'):'')+'</span>':'')+'<p>'+(desc?safe(desc):t('تواصل معنا لمعرفة تفاصيل هذا العطر.','Contact us for details about this perfume.'))+'</p><div class="quick-view__actions"><button class="btn gold" '+(out?'disabled':'')+' onclick="addToCart(\''+safe(p.slug)+'\');document.getElementById(\'quickViewDialog\').close()">'+t('أضف للسلة','Add to bag')+'</button><a class="btn soft" href="product.html?slug='+encodeURIComponent(p.slug)+'">'+t('التفاصيل الكاملة','Full details')+'</a><button class="btn soft" onclick="toggleWish(\''+safe(p.slug)+'\')">♥ '+t('المفضلة','Wishlist')+'</button></div></div></div>';
+  if(!dialog.open)dialog.showModal();
+}
+
+function renderRecentlyViewed(){
+  if(!productsLoaded)return;
+  const slugs=readStoredList('nadia_recent');
+  const current=nadiaCurrentFile()==='product.html'?new URLSearchParams(location.search).get('slug'):null;
+  const rows=slugs.filter(s=>s!==current).map(s=>allProducts.find(p=>p.slug===s)).filter(Boolean).slice(0,6);
+  let host=document.getElementById('recentlyViewed');
+  if(!rows.length){if(host)host.remove();return;}
+  if(!host){
+    const main=document.querySelector('main');if(!main)return;
+    host=document.createElement('section');host.id='recentlyViewed';host.className='recently-viewed';main.append(host);
+  }
+  host.innerHTML='<div class="wrap"><div class="recently-viewed__head"><div><div class="eyebrow">'+t('شوفتها قبل كده','RECENTLY VIEWED')+'</div><h2>'+t('ارجع لعطورك الأخيرة','Continue exploring')+'</h2></div></div><div class="recently-viewed__rail">'+rows.map(p=>'<article><a href="product.html?slug='+encodeURIComponent(p.slug)+'"><div class="recently-viewed__image">'+productImgTag(p)+'</div><h3>'+safe(pname(p))+'</h3><span>'+money(p.price)+'</span></a><button type="button" onclick="openQuickView(\''+safe(p.slug)+'\')">'+t('عرض سريع','Quick view')+'</button></article>').join('')+'</div></div>';
+}
+
+function renderGiftBuilder(){
+  const select=document.getElementById('giftProduct');if(!select||!productsLoaded)return;
+  const previous=select.value;
+  select.innerHTML='<option value="">'+t('اختر العطر','Choose a perfume')+'</option>'+allProducts.map(p=>'<option value="'+safe(p.slug)+'">'+safe(pname(p))+' — '+money(p.price)+'</option>').join('');
+  let pref={};try{pref=JSON.parse(localStorage.getItem('nadia_gift_pref')||'{}')||{}}catch(_){}
+  const desired=previous||pref.slug||'';if([...select.options].some(o=>o.value===desired))select.value=desired;
+  const wrap=document.getElementById('giftWrapPreference'),message=document.getElementById('giftMessage');
+  if(wrap&&!wrap.value)wrap.value=pref.wrap||'';if(message&&!message.value)message.value=pref.message||'';
+}
+function saveGiftBuilder(){
+  const slug=document.getElementById('giftProduct')?.value||'';if(!slug)return toast(t('اختر العطر أولاً','Choose a perfume first'));
+  const pref={slug,wrap:(document.getElementById('giftWrapPreference')?.value||'').trim(),message:(document.getElementById('giftMessage')?.value||'').trim()};
+  try{localStorage.setItem('nadia_gift_pref',JSON.stringify(pref))}catch(_){}
+  const status=document.getElementById('giftBuilderStatus');if(status)status.textContent=t('تم حفظ تفضيلات الهدية وإضافة العطر للسلة.','Gift preferences saved and perfume added to your bag.');
+  addToCart(slug);
+}
+function applyGiftPrefsToCheckout(){
+  let pref={};try{pref=JSON.parse(localStorage.getItem('nadia_gift_pref')||'{}')||{}}catch(_){}
+  const gift=document.querySelector('[name="gift_message"]'),notes=document.querySelector('[name="notes"]');
+  if(gift&&pref.message&&!gift.value)gift.value=pref.message;
+  if(notes&&pref.wrap&&!notes.value)notes.value=t('تفضيل تغليف الهدية: ','Gift wrapping preference: ')+pref.wrap;
+}
+
+function initEventExperience(){
+  const form=document.getElementById('eventForm');if(!form||form.dataset.experienceReady)return;
+  form.dataset.experienceReady='1';
+  const shell=document.createElement('div');shell.className='event-planner-shell';
+  form.parentNode.insertBefore(shell,form);shell.append(form);
+  const aside=document.createElement('aside');aside.className='event-live-card';
+  aside.innerHTML='<div class="eyebrow">'+t('ملخص مناسبتك','YOUR EVENT')+'</div><h3>'+t('نبني التفاصيل معك','Your plan at a glance')+'</h3><div id="eventLiveSummary"></div><div class="event-progress"><span></span></div><small id="eventProgressText"></small>';
+  shell.append(aside);
+  const update=()=>{
+    const f=new FormData(form),pairs=[
+      [t('نوع المناسبة','Event'),String(f.get('event_type')||'')],
+      [t('التاريخ','Date'),String(f.get('event_date')||'')],
+      [t('المدينة','City'),String(f.get('city')||'')],
+      [t('عدد الضيوف','Guests'),String(f.get('guest_count')||'')]
+    ];
+    const summary=document.getElementById('eventLiveSummary');if(summary){summary.innerHTML='';pairs.forEach(([label,value])=>{const row=document.createElement('div');row.className='event-live-row';const a=document.createElement('span'),b=document.createElement('b');a.textContent=label;b.textContent=value||'—';row.append(a,b);summary.append(row);});}
+    const required=[...form.querySelectorAll('[required]')],done=required.filter(el=>el.type==='checkbox'?el.checked:String(el.value||'').trim()).length,pct=required.length?Math.round(done/required.length*100):0;
+    const bar=aside.querySelector('.event-progress span');if(bar)bar.style.width=pct+'%';
+    const label=document.getElementById('eventProgressText');if(label)label.textContent=t('اكتمل '+pct+'% من الطلب,pct+'% complete');
+  };
+  form.addEventListener('input',update);form.addEventListener('change',update);update();
+}
+
+function applyHomeLayout(v={}){
+  const home=document.querySelector('.concept-home');if(!home)return;
+  const visibility={collection:true,gifts:true,events:true,story:true,world:true,...(v.section_visibility||{})};
+  const order={collection:1,gifts:2,events:3,story:4,world:5,...(v.section_order||{})};
+  const items=[
+    ['collection',home.querySelector('.concept-collection')],
+    ['gifts',home.querySelector('#gifting')],
+    ['events',home.querySelector('#events')],
+    ['story',home.querySelector('#our-story')],
+    ['world',home.querySelector('#social-gallery')]
+  ].filter(([,node])=>node);
+  items.forEach(([key,node])=>node.hidden=visibility[key]===false);
+  items.sort((a,b)=>(Number(order[a[0]])||99)-(Number(order[b[0]])||99)).forEach(([,node])=>home.append(node));
+}
+
+const nadiaBaseRenderProducts=renderProducts;
+renderProducts=function(){nadiaBaseRenderProducts();enhanceProductCards();renderRecentlyViewed();renderGiftBuilder();};
+const nadiaBaseRenderCart=renderCart;
+renderCart=function(){nadiaBaseRenderCart();syncMobileNavCounts();};
+const nadiaBaseRenderWishlistCount=renderWishlistCount;
+renderWishlistCount=function(){nadiaBaseRenderWishlistCount();syncMobileNavCounts();};
+
+document.addEventListener('DOMContentLoaded',()=>{
+  initMobileDock();ensureQuickView();initEventExperience();applyGiftPrefsToCheckout();
+});
+document.addEventListener('languagechange',()=>{
+  document.querySelector('.mobile-dock')?.remove();initMobileDock();renderGiftBuilder();renderRecentlyViewed();
+});
