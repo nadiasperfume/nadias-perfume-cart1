@@ -18,5 +18,6 @@ function context(file,sb){const elements=new Map(),memory=new Map();const docume
  const body=element();admin.elements.set('#ordersBody',body);await admin.run('loadOrders()');assert.match(body.innerHTML,/تعذر تحميل الطلبات/);assert(!body.innerHTML.includes('لا توجد طلبات'));
  const form=element({reset(){this.resetCalled=true;}});admin.elements.set('#productForm',form);admin.elements.set('[name="active"]',element());admin.elements.set('[name="featured"]',element());admin.elements.set('#productEditor',element());
  admin.run("products=[{id:'test',updated_at:'version',active:true,featured:false}];editProduct('test')");assert.equal(form.resetCalled,true);assert.equal(admin.run('editingVersion'),'version');
- console.log('PASS: blank CMS edits, cleared images, network retry button, preserved cart, explicit admin load errors, product form reset');
+ const serverSource=fs.readFileSync('server.js','utf8');assert.match(serverSource,/PRIVATE_DIRS\.has\(firstSegment\)/);assert.match(serverSource,/'package-lock\.json'/);
+ console.log('PASS: blank CMS edits, cleared images, network retry button, preserved cart, explicit admin load errors, product form reset, private server paths');
 })().catch(e=>{console.error(e);process.exitCode=1;});
