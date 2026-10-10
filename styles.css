@@ -311,3 +311,8 @@ body:not(.admin-body) .quick-view .eyebrow{color:#73552e}
 .event-page .event-live-card{position:static;order:-1}
 .event-page .event-form{min-width:0}
 .event-live-row b{min-width:0;overflow-wrap:anywhere}
+
+/* Original Nadia slogan stays directly beneath the logo. */
+.brand-lockup{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;vertical-align:middle;gap:3px;max-width:100%;text-align:center}
+.brand-lockup .brand-logo{display:block;max-width:100%;height:auto}
+.brand-tagline{display:block;font-size:clamp(9px,0.75vw,12px);line-height:1.35;font-weight:500;white-space:normal;max-width:190px;text-align:center;color:inherit}
