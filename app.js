@@ -69,7 +69,8 @@ async function loadHomeContent(){
   const v=data?.value||{};
   const setText=(el,ar,en)=>{if(!el)return;if(ar!==undefined)el.dataset.ar=ar;if(en!==undefined)el.dataset.en=en;el.textContent=lang==='ar'?(el.dataset.ar||''):(el.dataset.en||'')};
   const setImg=applyCmsImage;
-  setText(document.querySelector('.hero h1,.concept-hero h1'),v.hero_ar,v.hero_en);
+  const heroTitle=document.querySelector('.hero h1,.concept-hero h1');
+  if(!heroTitle?.classList.contains('hero-brand-slogan'))setText(heroTitle,v.hero_ar,v.hero_en);
   setImg(document.querySelector('.hero .campaign-image,.concept-hero .campaign-image'),v.hero_image);
   setText(document.querySelector('#gifting h2'),v.gifts_ar,v.gifts_en);
   setImg(document.querySelector('#gifting .campaign-image'),v.gifts_image);
@@ -79,6 +80,7 @@ async function loadHomeContent(){
   setText(document.querySelector('#our-story h2'),v.story_ar,v.story_en);
   setImg(document.querySelector('#our-story .campaign-image'),v.story_image);
   applyHomeLayout(v);
+  applySurfaceContent();
 }
 async function loadAnnouncement(){if(!sb)return;const {data}=await sb.from('announcements').select('*').eq('active',true).order('updated_at',{ascending:false}).limit(1).maybeSingle();const el=$('#announcement');if(el&&data){el.dataset.ar=data.text_ar||'';el.dataset.en=data.text_en||'';el.textContent=lang==='ar'?data.text_ar:data.text_en;el.classList.remove('hidden')}}
 function renderProductPage(){const el=$('#productDetail');if(!el)return;if(!productsLoaded){el.textContent=t('جاري التحميل…','Loading…');return;}const slug=new URLSearchParams(location.search).get('slug');const p=allProducts.find(x=>x.slug===slug);if(!p){el.innerHTML=`<div class="panel">${t('العطر غير موجود','Perfume not found')}</div>`;return}updateProductMetadata(p);const previousQty=$('#detailQty')?.value||'1';const img=productImage(p),desc=lang==='ar'?(p.description_ar||''):(p.description_en||'');const size=p.size||p.size_ml||'';el.innerHTML=`<div class="product-media">${img?`${productImgTag(p)}<span class="product-image-name product-image-name--detail">${safe(pname(p))}</span>`:safe(pname(p).slice(0,1))}</div><div><div class="eyebrow">${t('عطور نادية','NADIA’S PERFUME CART')}</div><h2>${safe(pname(p))}</h2><div class="price">${money(p.price)}</div>${size?`<div class="chips"><span class="chip">${safe(size)}${String(size).match(/^\d+$/)?t(' مل',' ml'):''}</span></div>`:''}<p>${desc?safe(desc):t('تواصل معنا لمعرفة تفاصيل هذا العطر.','Contact us for details about this perfume.')}</p><div class="row"><input id="detailQty" aria-label="${t('الكمية','Quantity')}" class="qty" type="number" min="1" value="${safe(previousQty)}"><button class="btn gold" ${NadiaStore.purchasable(p)?'':'disabled'} onclick="addToCart('${safe(p.slug)}',document.getElementById('detailQty').value)">${t('أضف للسلة','Add to cart')}</button><button class="btn soft" onclick="toggleWish('${safe(p.slug)}')">♥ ${t('المفضلة','Wishlist')}</button></div></div>`}
@@ -223,14 +225,34 @@ async function loadCmsRuntime(){
   applyGlobalSettings(nadiaCmsCache.settings||{});
   const page=cmsPageKey();if(page)applyPageCms(page,nadiaCmsCache['page_'+page]||{});
   if(document.querySelector('.hero,.concept-hero'))await loadHomeContent();
+  applySurfaceContent();
 }
 document.addEventListener('DOMContentLoaded',()=>loadCmsRuntime().catch(()=>{}));
 document.addEventListener('languagechange',()=>{
   if(!nadiaCmsCache)return;
   applyGlobalSettings(nadiaCmsCache.settings||{});
   const page=cmsPageKey();if(page)applyPageCms(page,nadiaCmsCache['page_'+page]||{});
-  if(document.querySelector('.hero,.concept-hero'))loadHomeContent();
+  if(document.querySelector('.hero,.concept-hero'))loadHomeContent().then(applySurfaceContent);else applySurfaceContent();
 });
+
+function applySurfaceContent(){
+  if(!nadiaCmsCache)return;
+  const page=(location.pathname.split('/').pop()||'index.html').replace('.html','').replaceAll('-','_');
+  for(const key of ['global',page]){
+    const fields=nadiaCmsCache['surface_'+key]?.fields||{};
+    const targets=selector=>[...document.querySelectorAll(selector)].filter(el=>key==='global'?el.closest('header,footer,#mobileMenu'):el.closest('main'));
+    for(const [id,value] of Object.entries(fields)){
+      const escaped=CSS.escape(id);
+      targets(`[data-surface-text="${escaped}"]`).forEach(el=>applyCmsText(el,value.ar,value.en));
+      targets(`[data-surface-image="${escaped}"]`).forEach(el=>applyCmsImage(el,value.url));
+      targets(`[data-surface-placeholder="${escaped}"]`).forEach(el=>{
+        if(value.ar!==undefined)el.dataset.placeholderAr=value.ar;
+        if(value.en!==undefined)el.dataset.placeholderEn=value.en;
+        el.placeholder=lang==='ar'?el.dataset.placeholderAr:el.dataset.placeholderEn;
+      });
+    }
+  }
+}
 
 
 

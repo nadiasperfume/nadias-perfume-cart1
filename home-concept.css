@@ -79,3 +79,12 @@
   .concept-hero__actions{align-items:flex-start;flex-direction:column}
   .concept-product-grid .card,.concept-product-grid .card:nth-child(3n+1){flex-basis:84vw}
 }
+
+/* Centered original brand, forest green and gold. */
+.concept-hero{align-items:center;min-height:660px}
+.concept-hero__content{display:flex;flex-direction:column;align-items:center;text-align:center;padding-block:70px;gap:22px}
+.concept-hero__veil,html[dir=rtl] .concept-hero__veil{transform:none;background:linear-gradient(180deg,rgba(7,24,17,.72),rgba(7,24,17,.9))}
+.concept-hero .hero-brand-logo{width:clamp(240px,34vw,480px);max-width:85%;height:auto;object-fit:contain;filter:drop-shadow(0 8px 24px rgba(0,0,0,.3))}
+.concept-hero h1.hero-brand-slogan,html[dir=rtl] .concept-hero h1.hero-brand-slogan{font-family:inherit;font-size:clamp(20px,2.5vw,34px);font-weight:500;line-height:1.7;letter-spacing:0;color:var(--gold);max-width:90%;margin:0}
+.concept-hero__actions{justify-content:center;margin-top:20px}
+@media(max-width:560px){.concept-hero{min-height:620px;height:auto}.concept-hero__content{padding-block:65px}.concept-hero .hero-brand-logo{width:285px}.concept-hero__actions{gap:18px}}
