@@ -1,0 +1,38 @@
+name: Deploy Nadia Store to GitHub Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build static storefront
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          mkdir -p _site
+          find . -maxdepth 1 -type f ! -name 'server.js' ! -name 'package*.json' ! -name '*.sql' ! -name 'README*' ! -name 'INSTALL.txt' ! -name 'LOGO-UPDATE.txt' -exec cp {} _site/ \;
+          for dir in assets images img fonts; do
+            if [ -d "$dir" ]; then cp -R "$dir" _site/; fi
+          done
+          node -e 'const fs=require("fs");const url=process.env.SUPABASE_URL||"";const anonKey=process.env.SUPABASE_PUBLISHABLE_KEY||"";fs.writeFileSync("_site/supabase-config.js","window.NADIA_SUPABASE = "+JSON.stringify({url,anonKey})+";\n")'
+          touch _site/.nojekyll
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
