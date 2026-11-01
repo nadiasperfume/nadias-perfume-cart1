@@ -28,7 +28,7 @@ jobs:
           for dir in assets images img fonts; do
             if [ -d "$dir" ]; then cp -R "$dir" _site/; fi
           done
-          node -e 'const fs=require("fs");const url=process.env.SUPABASE_URL||"";const anonKey=process.env.SUPABASE_PUBLISHABLE_KEY||"";fs.writeFileSync("_site/supabase-config.js","window.NADIA_SUPABASE = "+JSON.stringify({url,anonKey})+";\n")'
+          node -e 'const fs=require("fs");const vm=require("vm");const context={window:{}};vm.runInNewContext(fs.readFileSync("supabase-config.js","utf8"),context);const fallback=context.window.NADIA_SUPABASE||{};const url=process.env.SUPABASE_URL||fallback.url;const anonKey=process.env.SUPABASE_PUBLISHABLE_KEY||fallback.anonKey;if(!url||!anonKey)throw Error("Missing public Supabase configuration");fs.writeFileSync("_site/supabase-config.js","window.NADIA_SUPABASE = "+JSON.stringify({url,anonKey})+";\n")'
           touch _site/.nojekyll
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
