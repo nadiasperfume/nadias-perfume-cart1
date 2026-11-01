@@ -5,8 +5,8 @@ let cart=readStoredList('nadia_cart').filter(i=>i&&typeof i.slug==='string').map
 let wishlist=readStoredList('nadia_wishlist').filter(i=>typeof i==='string');
 let allProducts=[],productsLoaded=false;
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
-const money=(v,storedCurrency)=>{if(v==null)return t('استفسر عن السعر','Ask for the price');const currency=storedCurrency||window.NADIA_CMS_SETTINGS?.currency||'EGP';try{return new Intl.NumberFormat(lang==='ar'?'ar-EG':'en-GB',{style:'currency',currency,maximumFractionDigits:2}).format(Number(v))}catch(_){return Number(v).toFixed(2)+' '+currency}};
-const pname=p=>lang==='ar'?(p.name_ar||p.name_en):(p.name_en||p.name_ar);
+const money=(v,storedCurrency)=>{if(v==null)return t('استفسر عن السعر','Ask for the price');const currency=storedCurrency||window.NADIA_CMS_SETTINGS?.currency||'EGP';try{return new Intl.NumberFormat(lang==='ar'?'ar-EG':lang==='fr'?'fr-FR':'en-GB',{style:'currency',currency,maximumFractionDigits:2}).format(Number(v))}catch(_){return Number(v).toFixed(2)+' '+currency}};
+const pname=p=>lang==='ar'?(p.name_ar||p.name_en):(lang==='fr'?(p.name_fr||p.name_en||p.name_ar):(p.name_en||p.name_ar));
 function safe(v=''){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function toast(msg){let x=$('#toast');if(!x){x=document.createElement('div');x.id='toast';x.className='toast';document.body.append(x)}x.textContent=msg;x.classList.remove('hidden');setTimeout(()=>x.classList.add('hidden'),2200)}
 function syncBrand(){const file='nadias-logo-transparent.png';$$('[data-brand-logo]').forEach(i=>{i.src=file;i.alt=lang==='ar'?'عطور نادية':"Nadia's Perfume Cart"})}
@@ -67,7 +67,7 @@ async function loadHomeContent(){
   if(!sb||!document.querySelector('.hero,.concept-hero'))return;
   const {data}=await sb.from('site_content').select('value').eq('key','home').maybeSingle();
   const v=data?.value||{};
-  const setText=(el,ar,en)=>{if(!el)return;if(ar!==undefined)el.dataset.ar=ar;if(en!==undefined)el.dataset.en=en;el.textContent=lang==='ar'?(el.dataset.ar||''):(el.dataset.en||'')};
+  const setText=(el,ar,en)=>{if(!el)return;if(ar!==undefined)el.dataset.ar=ar;if(en!==undefined)el.dataset.en=en;el.textContent=t(el.dataset.ar||'',el.dataset.en||'')};
   const setImg=applyCmsImage;
   const heroTitle=document.querySelector('.hero h1,.concept-hero h1');
   if(!heroTitle?.classList.contains('hero-brand-slogan'))setText(heroTitle,v.hero_ar,v.hero_en);
@@ -83,10 +83,10 @@ async function loadHomeContent(){
   applySurfaceContent();
 }
 async function loadAnnouncement(){if(!sb)return;const {data}=await sb.from('announcements').select('*').eq('active',true).order('updated_at',{ascending:false}).limit(1).maybeSingle();const el=$('#announcement');if(el&&data){el.dataset.ar=data.text_ar||'';el.dataset.en=data.text_en||'';el.textContent=lang==='ar'?data.text_ar:data.text_en;el.classList.remove('hidden')}}
-function renderProductPage(){const el=$('#productDetail');if(!el)return;if(!productsLoaded){el.textContent=t('جاري التحميل…','Loading…');return;}const slug=new URLSearchParams(location.search).get('slug');const p=allProducts.find(x=>x.slug===slug);if(!p){el.innerHTML=`<div class="panel">${t('العطر غير موجود','Perfume not found')}</div>`;return}updateProductMetadata(p);const previousQty=$('#detailQty')?.value||'1';const img=productImage(p),desc=lang==='ar'?(p.description_ar||''):(p.description_en||'');const size=p.size||p.size_ml||'';el.innerHTML=`<div class="product-media">${img?`${productImgTag(p)}<span class="product-image-name product-image-name--detail">${safe(pname(p))}</span>`:safe(pname(p).slice(0,1))}</div><div><div class="eyebrow">${t('عطور نادية','NADIA’S PERFUME CART')}</div><h2>${safe(pname(p))}</h2><div class="price">${money(p.price)}</div>${size?`<div class="chips"><span class="chip">${safe(size)}${String(size).match(/^\d+$/)?t(' مل',' ml'):''}</span></div>`:''}<p>${desc?safe(desc):t('تواصل معنا لمعرفة تفاصيل هذا العطر.','Contact us for details about this perfume.')}</p><div class="row"><input id="detailQty" aria-label="${t('الكمية','Quantity')}" class="qty" type="number" min="1" value="${safe(previousQty)}"><button class="btn gold" ${NadiaStore.purchasable(p)?'':'disabled'} onclick="addToCart('${safe(p.slug)}',document.getElementById('detailQty').value)">${t('أضف للسلة','Add to cart')}</button><button class="btn soft" onclick="toggleWish('${safe(p.slug)}')">♥ ${t('المفضلة','Wishlist')}</button></div></div>`}
+function renderProductPage(){const el=$('#productDetail');if(!el)return;if(!productsLoaded){el.textContent=t('جاري التحميل…','Loading…');return;}const slug=new URLSearchParams(location.search).get('slug');const p=allProducts.find(x=>x.slug===slug);if(!p){el.innerHTML=`<div class="panel">${t('العطر غير موجود','Perfume not found')}</div>`;return}updateProductMetadata(p);const previousQty=$('#detailQty')?.value||'1';const img=productImage(p),desc=lang==='ar'?(p.description_ar||''):(lang==='fr'?(p.description_fr||p.description_en||''):(p.description_en||''));const size=p.size||p.size_ml||'';el.innerHTML=`<div class="product-media">${img?`${productImgTag(p)}<span class="product-image-name product-image-name--detail">${safe(pname(p))}</span>`:safe(pname(p).slice(0,1))}</div><div><div class="eyebrow">${t('عطور نادية','NADIA’S PERFUME CART')}</div><h2>${safe(pname(p))}</h2><div class="price">${money(p.price)}</div>${size?`<div class="chips"><span class="chip">${safe(size)}${String(size).match(/^\d+$/)?t(' مل',' ml'):''}</span></div>`:''}<p>${desc?safe(desc):t('تواصل معنا لمعرفة تفاصيل هذا العطر.','Contact us for details about this perfume.')}</p><div class="row"><input id="detailQty" aria-label="${t('الكمية','Quantity')}" class="qty" type="number" min="1" value="${safe(previousQty)}"><button class="btn gold" ${NadiaStore.purchasable(p)?'':'disabled'} onclick="addToCart('${safe(p.slug)}',document.getElementById('detailQty').value)">${t('أضف للسلة','Add to cart')}</button><button class="btn soft" onclick="toggleWish('${safe(p.slug)}')">♥ ${t('المفضلة','Wishlist')}</button></div></div>`}
 function checkoutSettings(){return window.NADIA_CMS_SETTINGS||{};}
 function activeShippingRates(){const settings=checkoutSettings();return (settings.shipping_rates||[]).filter(r=>r.country==='EG'||settings.international_shipping_enabled===true);}
-function deliveryCountryName(code){try{return new Intl.DisplayNames([lang==='ar'?'ar':'en'],{type:'region'}).of(code)||code;}catch{return code;}}
+function deliveryCountryName(code){try{return new Intl.DisplayNames([lang],{type:'region'}).of(code)||code;}catch{return code;}}
 function selectedShipping(){const country=$('#checkoutCountry')?.value;return activeShippingRates().find(r=>r.country===country);}
 function renderCheckout(){
  const el=$('#orderSummary');if(!el)return;
@@ -174,7 +174,7 @@ function cmsPageKey(){
 function applyCmsText(el,ar,en){
   if(!el)return;
   if(ar!==undefined)el.dataset.ar=ar;if(en!==undefined)el.dataset.en=en;
-  el.textContent=lang==='ar'?(el.dataset.ar??el.textContent):(el.dataset.en??el.textContent);
+  el.textContent=t(el.dataset.ar??el.textContent,el.dataset.en??el.textContent);
 }
 function applyCmsImage(el,url){
   if(!el||url===undefined)return;
@@ -248,7 +248,7 @@ function applySurfaceContent(){
       targets(`[data-surface-placeholder="${escaped}"]`).forEach(el=>{
         if(value.ar!==undefined)el.dataset.placeholderAr=value.ar;
         if(value.en!==undefined)el.dataset.placeholderEn=value.en;
-        el.placeholder=lang==='ar'?el.dataset.placeholderAr:el.dataset.placeholderEn;
+        el.placeholder=t(el.dataset.placeholderAr,el.dataset.placeholderEn);
       });
     }
   }
@@ -339,7 +339,7 @@ function openQuickView(slug){
   const dialog=ensureQuickView(),body=document.getElementById('quickViewBody');
   dialog.setAttribute('aria-label',pname(p));
   dialog.querySelector('.quick-view__close').setAttribute('aria-label',t('إغلاق','Close'));
-  const desc=lang==='ar'?(p.description_ar||''):(p.description_en||'');
+  const desc=lang==='ar'?(p.description_ar||''):(lang==='fr'?(p.description_fr||p.description_en||''):(p.description_en||''));
   const size=p.size||p.size_ml||'',out=!NadiaStore.purchasable(p);
   body.innerHTML='<div class="quick-view__grid"><div class="quick-view__media">'+productImgTag(p)+'</div><div class="quick-view__copy"><div class="eyebrow">'+t('اكتشف العطر','DISCOVER THE SCENT')+'</div><h2>'+safe(pname(p))+'</h2><div class="price">'+money(p.price)+'</div>'+(size?'<span class="chip">'+safe(size)+(String(size).match(/^\d+$/)?t(' مل',' ml'):'')+'</span>':'')+'<p>'+(desc?safe(desc):t('تواصل معنا لمعرفة تفاصيل هذا العطر.','Contact us for details about this perfume.'))+'</p><div class="quick-view__actions"><button class="btn gold" '+(out?'disabled':'')+' onclick="addToCart(\''+safe(p.slug)+'\');document.getElementById(\'quickViewDialog\').close()">'+t('أضف للسلة','Add to bag')+'</button><a class="btn soft" href="product.html?slug='+encodeURIComponent(p.slug)+'">'+t('التفاصيل الكاملة','Full details')+'</a><button class="btn soft" onclick="toggleWish(\''+safe(p.slug)+'\')">♥ '+t('المفضلة','Wishlist')+'</button></div></div></div>';
   if(!dialog.open)dialog.showModal();

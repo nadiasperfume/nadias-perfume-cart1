@@ -1,7 +1,7 @@
 'use strict';
 (function(){
  const host=document.getElementById('customerReviews');if(!host)return;
- const tr=(ar,en)=>document.documentElement.lang==='en'?en:ar;
+ const tr=(ar,en)=>typeof t==='function'?t(ar,en):ar;
  const cleanUrl=u=>{try{const x=new URL(u);return x.protocol==='https:'?x.href:null}catch{return null}};
  async function render(){
   if(typeof sb==='undefined'||!sb)return;

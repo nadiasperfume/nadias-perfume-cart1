@@ -1,3 +1,32 @@
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/cairo/v31/SLXgc1nY6HkvangtZmpQdkhzfH5lkSs2SgRjCAGMQ1z0hOA-W1Q.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/cairo/v31/SLXgc1nY6HkvangtZmpQdkhzfH5lkSs2SgRjCAGMQ1z0hNI-W1Q.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/cairo/v31/SLXgc1nY6HkvangtZmpQdkhzfH5lkSs2SgRjCAGMQ1z0hD45W1Q.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/cairo/v31/SLXgc1nY6HkvangtZmpQdkhzfH5lkSs2SgRjCAGMQ1z0hAc5W1Q.ttf) format('truetype');
+}
+
 :root{--forest:#071811;--forest2:#0d281d;--gold:#c9a568;--cream:#f7f0e4;--ink:#201b16;--muted:#bdb3a7;--line:rgba(201,165,104,.30);--danger:#8b2f2f}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--forest);color:var(--cream);font-family:Arial,sans-serif}a{text-decoration:none;color:inherit}button,input,textarea,select{font:inherit}.wrap{width:min(1180px,92%);margin:auto}.hidden{display:none!important}
 .notice{background:var(--gold);color:#122018;text-align:center;padding:9px 16px;font-weight:700}
@@ -316,3 +345,19 @@ body:not(.admin-body) .quick-view .eyebrow{color:#73552e}
 .brand-lockup{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;vertical-align:middle;gap:3px;max-width:100%;text-align:center}
 .brand-lockup .brand-logo{display:block;max-width:100%;height:auto}
 .brand-tagline{display:block;font-size:clamp(9px,0.75vw,12px);line-height:1.35;font-weight:500;white-space:normal;max-width:190px;text-align:center;color:inherit}
+
+/* Store typography, isolated from the administration interface. */
+body:not(:has(#login)){font-family:'Cairo',Arial,sans-serif;font-size:16px;line-height:1.85;font-weight:400}
+body:not(:has(#login)) :is(h1,h2,h3,h4,blockquote,.concept-kicker,.concept-index,.eyebrow){font-family:'Cairo',Arial,sans-serif;letter-spacing:normal}
+body:not(:has(#login)) h1{font-size:clamp(30px,4.5vw,62px);line-height:1.5;font-weight:600}
+body:not(:has(#login)) h2{font-size:clamp(25px,3.2vw,42px);line-height:1.55;font-weight:600}
+body:not(:has(#login)) h3{font-size:clamp(18px,2vw,24px);line-height:1.65;font-weight:600}
+body:not(:has(#login)) :is(.concept-story blockquote,.gift-intro h2,.gift-builder h2){font-family:'Cairo',Arial,sans-serif;font-size:clamp(26px,3.7vw,48px);line-height:1.6;font-weight:500}
+body:not(:has(#login)) :is(p,.meta,.stock){line-height:1.85}
+body:not(:has(#login)) :is(.btn,button,label,nav a){font-weight:600;letter-spacing:normal}
+body:not(:has(#login)) :is(.concept-kicker,.concept-index,.eyebrow){font-size:12px;line-height:1.8;font-weight:600}
+.store-language{font-family:'Cairo',Arial,sans-serif;font-size:13px;min-height:44px;max-width:112px;direction:ltr;background:var(--forest);color:var(--cream);padding:7px 9px;border-radius:7px}
+.store-language option{background:var(--forest);color:var(--cream)}
+.store-language:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+html[lang=fr] body:not(:has(#login)) :is(h1,h2,h3,blockquote){overflow-wrap:anywhere}
+@media(max-width:560px){body:not(:has(#login)){font-size:15px}body:not(:has(#login)) h1{font-size:32px}body:not(:has(#login)) h2{font-size:26px}body:not(:has(#login)) .card h3{font-size:17px}.store-language{max-width:95px;font-size:12px;padding-inline:5px}}

@@ -53,7 +53,7 @@ function applyHeaders(res) {
     "img-src 'self' data: https:",
     "style-src 'self' 'unsafe-inline'",
     "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
-    "font-src 'self' data:",
+    "font-src 'self' data: https://fonts.gstatic.com",
     "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
     "media-src 'self' https:",
     "frame-src 'self'"
