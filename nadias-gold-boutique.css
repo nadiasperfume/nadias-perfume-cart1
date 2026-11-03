@@ -49,3 +49,23 @@ footer{background:#110703;color:#f4d6a5;border-top:1px solid #ad7a39}
 .concept-product-grid .card .row .btn{max-width:100%}
 @media(max-width:760px){.nadia-category-links{grid-template-columns:repeat(3,1fr);gap:9px}.nadia-benefits{grid-template-columns:repeat(2,1fr)}.nadia-benefits>div:nth-child(2){border:0}.nadia-benefits>div{padding:10px 4px;gap:7px}.nadia-benefits b{font-size:12px}}
 @media(max-width:390px){.nadia-category-links a{font-size:12px;min-height:76px}.nadia-category-links a>span:first-child{font-size:23px}}
+
+/* Luxury storefront refinements — original sections and shopping functionality retained */
+:root{--forest:#160a05;--forest2:#2c170d;--gold:#f2bd63;--cream:#fff0d0;--ink:#24150c;--muted:#d7b998;--line:rgba(242,189,99,.35)}
+html{background:#160a05}body{background:#160a05;color:#fff0d0}
+header .nav{min-height:92px;gap:22px}header nav a{color:#ffe2b5;font-weight:600;letter-spacing:.015em}header nav a:hover{color:#ffd079}
+.brand-lockup{display:flex;align-items:center;gap:12px}.brand-logo{height:70px;max-width:220px;object-fit:contain}.brand-tagline{color:#dfb77c;font-size:11px;max-width:180px;line-height:1.5}
+.concept-hero{background:radial-gradient(ellipse at 50% 35%,#4d2a13 0%,#221006 52%,#100703 100%)}
+.concept-hero__media{opacity:.38;mix-blend-mode:normal}.concept-hero__veil{background:linear-gradient(0deg,#160a05 0%,#1a0b05aa 30%,#1408049e 100%)!important}
+.concept-hero__content{padding-block:90px 100px;gap:22px}.hero-brand-logo{width:min(400px,76vw)!important;max-height:420px;filter:drop-shadow(0 0 16px #f4b653a0)}
+.concept-hero__actions .btn.gold,.btn.gold{border:1px solid #ffcc78;background:linear-gradient(135deg,#ffe1a2,#d89838);color:#271205;font-weight:700;box-shadow:0 0 18px #d88c3540}
+.concept-text-link{color:#ffd79a;border-color:#dca150}
+.nadia-category-links a{border-color:#ac7637;background:linear-gradient(155deg,#3b210f,#1c0d05);box-shadow:inset 0 1px #f4bf6040}.nadia-category-links a:hover{border-color:#f6c16a}
+.concept-manifesto,.concept-event{border-color:#b5813b}.concept-manifesto p,.concept-event__copy p{color:#e2c6a5}
+.concept-collection{background:linear-gradient(180deg,#1b0c05,#311b0d 45%,#170a04)}.concept-product-grid .card{color:#ffe4b6}.concept-product-grid .card .meta,.concept-product-grid .card .stock{color:#d8ba92}.concept-product-grid .card .price{color:#ffd188}
+.concept-story{background:linear-gradient(145deg,#422914,#241207);color:#ffe7c2}.concept-story blockquote{color:#ffe1b0}.concept-story .concept-text-link{color:#f5c67f;border-color:#b78243}.concept-story .eyebrow{color:#d7aa6e}
+.concept-world{background:#190b05}.nadia-benefits{box-shadow:0 10px 45px #0004}footer .brand-logo{height:84px}
+/* Maintain existing cart, navigation, search and product interactions */
+.cart-drawer{background:#2c170d;color:#fff0d0;border-inline-start:1px solid #a67537}.cart-item{border-color:#8d623c}.cart-total{color:#ffd28c}.mobile-menu{background:#271407;color:#fff0d0}.mobile-menu a{border-color:#77512d}
+@media(max-width:900px){header .nav{min-height:74px}.brand-logo{height:53px}.brand-tagline{display:none}}
+@media(max-width:560px){header .nav{min-height:66px}.brand-logo{height:45px;max-width:145px}.concept-hero{min-height:610px}.concept-hero__content{padding-block:76px 90px}.hero-brand-logo{width:min(310px,77vw)!important}.hero-brand-slogan{font-size:clamp(19px,5vw,28px)!important}.concept-product-grid .card h3{font-size:18px}.concept-manifesto{padding-block:48px}.nadia-category-links a{min-height:78px}}
