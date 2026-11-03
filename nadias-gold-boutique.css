@@ -32,3 +32,20 @@ nav a:hover,.eyebrow,.concept-kicker{color:#ffd18a}
 footer{background:#110703;color:#f4d6a5;border-top:1px solid #ad7a39}
 @media(max-width:900px){.concept-product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.concept-product-grid .product-media,.concept-product-grid .card:nth-child(3n+1) .product-media{height:210px}.concept-hero{min-height:580px}.concept-manifesto{padding-block:50px}}
 @media(max-width:540px){.concept-product-grid{gap:10px}.concept-product-grid .product-media,.concept-product-grid .card:nth-child(3n+1) .product-media{height:160px}.concept-product-grid .card h3{font-size:17px}.concept-hero{min-height:520px}.hero-brand-logo{width:min(260px,72vw)!important}.concept-hero__content{padding-block:50px}.concept-hero__actions{gap:12px}.concept-hero__actions .btn{padding:12px 23px}.concept-manifesto__number{display:none}}
+
+/* Approved storefront reference: glowing gold on dark walnut */
+.nadia-category-links{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px;padding-top:22px;padding-bottom:28px}
+.nadia-category-links a{min-height:92px;border:1px solid #98601f;border-radius:15px;background:linear-gradient(150deg,#321807,#1a0b04);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:#ffe1ac;transition:transform .2s,box-shadow .2s}
+.nadia-category-links a:hover{transform:translateY(-3px);box-shadow:0 0 22px #dc973b50}
+.nadia-category-links a>span:first-child{font-size:29px;color:#ffc36c}
+.nadia-benefits{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid #98601f;border-radius:20px;margin-block:55px;padding:25px 10px;background:linear-gradient(130deg,#311807,#1b0c05)}
+.nadia-benefits>div{display:flex;align-items:center;justify-content:center;gap:12px;padding:15px;border-inline-end:1px solid #98601f}
+.nadia-benefits>div:last-child{border:0}
+.nadia-benefits span{font-size:28px;color:#ffcf79}
+.nadia-benefits b{font-size:14px}
+.concept-product-grid .card{transition:transform .2s,box-shadow .2s}
+.concept-product-grid .card:hover{transform:translateY(-5px);box-shadow:0 12px 38px #b9752738}
+.concept-product-grid .card .row{flex-wrap:wrap}
+.concept-product-grid .card .row .btn{max-width:100%}
+@media(max-width:760px){.nadia-category-links{grid-template-columns:repeat(3,1fr);gap:9px}.nadia-benefits{grid-template-columns:repeat(2,1fr)}.nadia-benefits>div:nth-child(2){border:0}.nadia-benefits>div{padding:10px 4px;gap:7px}.nadia-benefits b{font-size:12px}}
+@media(max-width:390px){.nadia-category-links a{font-size:12px;min-height:76px}.nadia-category-links a>span:first-child{font-size:23px}}
