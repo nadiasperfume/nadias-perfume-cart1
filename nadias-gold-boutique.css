@@ -95,3 +95,12 @@ body:not(.admin-body) .success{background:#26331e;color:#f7e7c5}
 .admin-body .btn.soft{color:#ffe4b8;border-color:#b88645}
 .admin-body input,.admin-body select,.admin-body textarea{background:#fff4df;color:#2c170d;border:1px solid #b98b51;border-radius:8px}
 @media(max-width:560px){body:not(.admin-body) .card{border-radius:12px}body:not(.admin-body) .panel{padding:17px}}
+
+/* 2026-11-04: mobile screenshots audit — eliminate green section gradients and illegible headings */
+html,body,body:not(.admin-body),body:not(.admin-body) main,body:not(.admin-body) main>section,body:not(.admin-body) section.section,body:not(.admin-body) .section,body:not(.admin-body) .recently-viewed,body:not(.admin-body) .recently-viewed-section,body:not(.admin-body) .page-hero,body:not(.admin-body) .shop-section,body:not(.admin-body) .products-section{background:#160a05!important;color:#fff0d0!important}
+body:not(.admin-body) .panel,body:not(.admin-body) .card,body:not(.admin-body) .event-step{background:linear-gradient(155deg,#352012,#211007)!important;color:#ffe9c7!important}
+body:not(.admin-body) .panel h1,body:not(.admin-body) .panel h2,body:not(.admin-body) .panel h3,body:not(.admin-body) .card h1,body:not(.admin-body) .card h2,body:not(.admin-body) .card h3,body:not(.admin-body) .event-step h2{color:#f7ce8c!important;-webkit-text-fill-color:#f7ce8c!important}
+body:not(.admin-body) .panel p,body:not(.admin-body) .card p{color:#fff0d0}
+body:not(.admin-body) .mobile-bottom-nav,body:not(.admin-body) .bottom-nav,body:not(.admin-body) .mobile-tab-bar{background:#211107!important;color:#fff0d0!important}
+body:not(.admin-body) .whatsapp-float,body:not(.admin-body) .whatsapp-button{background:#3a2414!important;color:#fff0d0!important}
+body:not(.admin-body) input::placeholder,body:not(.admin-body) textarea::placeholder{color:#9b8065;opacity:1}
