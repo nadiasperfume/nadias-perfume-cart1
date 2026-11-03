@@ -265,7 +265,7 @@ async function loadSettings(){
     setVal('#settingWhatsapp',siteSettings.whatsapp||'201112564000');setVal('#settingCurrency',siteSettings.currency||'EGP');
     setVal('#settingInstagram',siteSettings.instagram||'https://www.instagram.com/nadiasperfumecart');setVal('#settingTiktok',siteSettings.tiktok||'https://www.tiktok.com/@nadiasperfumecart');
     setVal('#settingFooterAr',siteSettings.footer_ar||'اتصمم خصيصاً عشان يبقى ليك ذكرى');setVal('#settingFooterEn',siteSettings.footer_en||'Designed specifically to be your memory');
-    loadCommerceSettings();renderProducts();if(orders.length)renderOrders();
+    loadCommerceSettings();window.loadAppearanceControls?.(siteSettings);renderProducts();if(orders.length)renderOrders();
   }catch(err){console.error(err)}
 }
 async function saveSettings(e){
@@ -273,6 +273,7 @@ async function saveSettings(e){
   try{
     const value={...siteSettings,...readCommerceSettings(),whatsapp:val('#settingWhatsapp').replace(/\D/g,''),currency:A('#settingCurrency').value,instagram:val('#settingInstagram'),tiktok:val('#settingTiktok'),footer_ar:val('#settingFooterAr'),footer_en:val('#settingFooterEn')};
     for(const key of ['instagram','tiktok'])if(value[key]&&!NadiaStore.httpsUrl(value[key]))throw new Error(txt('استخدم روابط HTTPS صحيحة.','Use valid HTTPS links.'));
+    Object.assign(value,await window.collectAppearanceSettings?.(siteSettings));
     await putContent('settings',value);siteSettings=value;setStatus('#settingsStatus',txt('تم حفظ الإعدادات.','Settings saved.'),'success');renderProducts();renderOrders();
   }catch(err){console.error(err);setStatus('#settingsStatus',err.message||String(err),'error')}finally{unlockForm(e.target)}
 }
