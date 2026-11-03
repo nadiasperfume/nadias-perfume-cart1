@@ -9,7 +9,7 @@ const money=(v,storedCurrency)=>{if(v==null)return t('استفسر عن السع
 const pname=p=>lang==='ar'?(p.name_ar||p.name_en):(lang==='fr'?(p.name_fr||p.name_en||p.name_ar):(p.name_en||p.name_ar));
 function safe(v=''){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function toast(msg){let x=$('#toast');if(!x){x=document.createElement('div');x.id='toast';x.className='toast';document.body.append(x)}x.textContent=msg;x.classList.remove('hidden');setTimeout(()=>x.classList.add('hidden'),2200)}
-function syncBrand(){const file='nadias-logo-transparent.png';$$('[data-brand-logo]').forEach(i=>{i.src=file;i.alt=lang==='ar'?'عطور نادية':"Nadia's Perfume Cart"})}
+function syncBrand(){const file=window.NADIA_APPEARANCE_LOGO||'nadias-logo-transparent.png';$('[data-brand-logo]').forEach(i=>{i.src=file;i.alt=lang==='ar'?'عطور نادية':"Nadia's Perfume Cart"})}
 function applyLang(){
   syncBrand();renderProducts();renderCart();renderWishlistCount();renderProductPage();renderCheckout();updateWhatsApp();
 }
@@ -433,3 +433,17 @@ document.addEventListener('DOMContentLoaded',()=>{
 document.addEventListener('languagechange',()=>{
   document.querySelector('.mobile-dock')?.remove();initMobileDock();renderGiftBuilder();renderRecentlyViewed();
 });
+
+/* Appearance settings: read public CMS settings; preserve original theme until changed by admin. */
+async function loadStoreAppearance(){
+ if(!sb)return;
+ try{const {data,error}=await sb.from('site_content').select('value').eq('key','settings').maybeSingle();if(error||!data?.value)return;
+ const s=data.value;const validColor=x=>typeof x==='string'&&/^#[0-9a-fA-F]{6}$/.test(x);
+ const mapping={theme_background:'--forest',theme_secondary:'--forest2',theme_accent:'--gold',theme_text:'--cream'};
+ for(const [key,variable] of Object.entries(mapping))if(validColor(s[key]))document.documentElement.style.setProperty(variable,s[key]);
+ if(validColor(s.theme_background))document.body.style.backgroundColor=s.theme_background;
+ if(validColor(s.theme_text))document.body.style.color=s.theme_text;
+ if(typeof s.theme_logo_url==='string'&&/^https:\/\//i.test(s.theme_logo_url)){window.NADIA_APPEARANCE_LOGO=s.theme_logo_url;syncBrand();document.querySelectorAll('.brand-logo:not([data-brand-logo])').forEach(img=>img.src=s.theme_logo_url)}
+ }catch(err){console.warn('Appearance settings unavailable',err)}
+}
+document.addEventListener('DOMContentLoaded',loadStoreAppearance);
